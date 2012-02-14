@@ -1,4 +1,5 @@
 #include "Node.h"
+#include "Graph.h"
 #include <iostream>
 
 using namespace std;
@@ -14,9 +15,27 @@ int main()
 	n.add_nbr(5);
 	n.add_nbr(10);
 	n.print();
-	list<int> &nlist = n.get_nbrs();
+	list<int> *nlist = n.get_nbrs();
 	n.delete_nbr(3);
 	n.delete_nbr(5);
 	n.print();
+
+	Graph g;
+	for (int i = 0; i < 5; i++)
+		g.add_node();
+
+	g.add_edge(0, 1);
+	g.add_edge(0, 4);
+	g.add_edge(1, 4);
+	g.add_edge(1, 2);
+	g.add_edge(2, 3);
+	g.add_edge(3, 4);
+	g.print();
+
+	cout << "Graph Operations" << endl;
+	cout << "##############"<< endl;
+	g.delete_node(4);
+	g.delete_node(0);
+	g.print();
 	return 0;
 }

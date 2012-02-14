@@ -22,14 +22,18 @@ void Node::add_nbr(int a)
 void Node::delete_nbr(int a)
 {
 	int bs, as = 0;
-	bs = this->nbrs.size();
-	this->nbrs.remove(a);
-	as = this->nbrs.size();
 
-	if (bs != as)
+	if (this->size > 0)
 	{
-		this->nbrs.push_back(a);
-		this->size--;
+		bs = this->nbrs.size();
+		this->nbrs.remove(a);
+		as = this->nbrs.size();
+
+		if (bs != as)
+		{
+			this->nbrs.push_back(a);
+			this->size--;
+		}
 	}
 }
 
@@ -41,7 +45,17 @@ void Node::print()
 	cout << endl;
 }
 
-list<int> Node::get_nbrs() const
+list<int>* Node::get_nbrs()
 {
-	return nbrs;
+	return &nbrs;
+}
+
+int Node::get_size() const 
+{
+	return this->size;
+}
+
+void Node::set_size(int i)
+{
+	this->size = i;
 }
