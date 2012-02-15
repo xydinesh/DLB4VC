@@ -1,5 +1,6 @@
 #include "Node.h"
 #include "Graph.h"
+#include "DimacsGraphBuilder.h"
 #include <iostream>
 
 using namespace std;
@@ -37,5 +38,8 @@ int main()
 	g.delete_node(4);
 	g.delete_node(0);
 	g.print();
+
+	DimacsGraphBuilder db("C:/Users/Dinesh/DLB4VC/sh2-5.dim");
+	db.build_graph();
 	return 0;
 }

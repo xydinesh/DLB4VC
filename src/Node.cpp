@@ -47,7 +47,9 @@ void Node::print()
 
 list<int>* Node::get_nbrs()
 {
-	return &nbrs;
+	if (this->size > 0)
+		return &nbrs;
+	return NULL;
 }
 
 int Node::get_size() const 
@@ -55,7 +57,7 @@ int Node::get_size() const
 	return this->size;
 }
 
-void Node::set_size(int i)
+void Node::remove()
 {
-	this->size = i;
+	this->size = -1;
 }

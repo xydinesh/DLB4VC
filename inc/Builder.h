@@ -1,15 +1,18 @@
 #ifndef __DLB4VC_BUILDER_H__
 #define __DLB4VC_BUILDER_H__
+#include "Graph.h"
 
 namespace dlb {
 
 	class GraphBuilder
 	{
+	protected:
 		char const *filename;
 
 	public:
-		GraphBuilder(char const *filename);
-		virtual ~GraphBuilder();
+		GraphBuilder() {};
+		GraphBuilder(char const *f) : filename(f) {};
+		virtual ~GraphBuilder() {};
 		virtual Graph* build_graph() = 0;
 	};
 }
