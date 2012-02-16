@@ -16,5 +16,4 @@ public:
 	virtual Graph* build_graph();
 };
 }
-#endif
-
+#endif //__DLB4VC_DIMACSGRAPHBUILDER_H__

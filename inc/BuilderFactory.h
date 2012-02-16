@@ -1,6 +1,7 @@
 #ifndef __DLB4VC_BUILDER_FACTORY_H__
 #define __DLB4VC_BUILDER_FACTORY_H__
 #include "Builder.h"
+#include <string>
 
 namespace dlb {
 

@@ -43,7 +43,7 @@ int main()
 	Graph *ng;
 	string gt("dimacs");
 	GraphBuilder *b = f.create_builder(gt);
-	b->set_filename("C:/Users/Dinesh/DLB4VC/sh2-5.dim");
+	b->set_filename("../sh2-5.dim");
 	ng = b->build_graph();
 
 	cout << ng->get_nnodes() << endl;
