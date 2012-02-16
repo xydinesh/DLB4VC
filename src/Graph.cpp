@@ -64,13 +64,16 @@ void Graph::delete_edge(int u, int v)
 		return;
 	}
 
-	this->nodes[u].delete_nbr(v);
-	this->nodes[v].delete_nbr(u);
+	if (u != v)
+	{
+		this->nodes[u].delete_nbr(v);
+		this->nodes[v].delete_nbr(u);
 
-	this->degree[u]--;
-	this->degree[v]--;
+		this->degree[u]--;
+		this->degree[v]--;
 
-	this->nedges--;
+		this->nedges--;
+	}
 }
 
 void Graph::add_edge(int u, int v)
@@ -87,13 +90,16 @@ void Graph::add_edge(int u, int v)
 		return;
 	}
 
-	this->nodes[u].add_nbr(v);
-	this->nodes[v].add_nbr(u);
+	if (u != v)
+	{
+		this->nodes[u].add_nbr(v);
+		this->nodes[v].add_nbr(u);
 
-	this->degree[u]++;
-	this->degree[v]++;
+		this->degree[u]++;
+		this->degree[v]++;
 
-	this->nedges ++;
+		this->nedges ++;
+	}
 }
 
 Node* Graph::get_node(int u)
@@ -115,6 +121,16 @@ int Graph::get_degree(int u)
 	}
 
 	return this->degree[u];
+}
+
+int Graph::get_nnodes()
+{
+	return this->nnodes;
+}
+
+int Graph::get_nedges()
+{
+	return this->nedges;
 }
 
 void Graph::print()

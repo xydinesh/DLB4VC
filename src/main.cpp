@@ -1,6 +1,6 @@
 #include "Node.h"
 #include "Graph.h"
-#include "DimacsGraphBuilder.h"
+#include "BuilderFactory.h"
 #include <iostream>
 
 using namespace std;
@@ -39,7 +39,14 @@ int main()
 	g.delete_node(0);
 	g.print();
 
-	DimacsGraphBuilder db("C:/Users/Dinesh/DLB4VC/sh2-5.dim");
-	db.build_graph();
+	GraphBuilderFactory f;
+	Graph *ng;
+	string gt("dimacs");
+	GraphBuilder *b = f.create_builder(gt);
+	b->set_filename("C:/Users/Dinesh/DLB4VC/sh2-5.dim");
+	ng = b->build_graph();
+
+	cout << ng->get_nnodes() << endl;
+
 	return 0;
 }

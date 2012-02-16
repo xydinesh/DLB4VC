@@ -22,6 +22,8 @@ namespace dlb {
 		void delete_node(int u);
 		int add_node();
 		int get_degree(int u);
+		int get_nnodes();
+		int get_nedges();
 		void print();
 	};
 }

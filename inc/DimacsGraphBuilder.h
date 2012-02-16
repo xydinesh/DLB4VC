@@ -7,6 +7,8 @@ namespace dlb {
 class DimacsGraphBuilder :
 	public GraphBuilder
 {
+private:
+	void split(const string &s, vector<int> &v);
 public:
 	DimacsGraphBuilder(void);
 	DimacsGraphBuilder(const char *f);
