@@ -2,7 +2,9 @@
 #define __DLB4VC_DIMACSGRAPHBUILDER_H__
 #include "Builder.h"
 #include "Graph.h"
+#include <string>
 
+using namespace std;
 namespace dlb {
 class DimacsGraphBuilder :
 	public GraphBuilder

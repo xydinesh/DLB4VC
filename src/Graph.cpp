@@ -28,7 +28,7 @@ void Graph::delete_node(int u)
 {
 	if (this->nnodes < u)
 	{
-		fprintf(stderr, "there is no node in %d\n", u);
+		cerr << "there is no node in " << u << endl;
 		return;
 	}
 
@@ -54,13 +54,13 @@ void Graph::delete_edge(int u, int v)
 {
 	if (this->nnodes < u)
 	{
-		fprintf(stderr, "there is no node in %d\n", u);
+		cerr << "there is no node in " << u << endl;
 		return;
 	}
 
 	if (this->nnodes < v)
 	{
-		fprintf(stderr, "there is no node in %d\n", v);
+        cerr << "there is no node in " << v << endl;
 		return;
 	}
 
@@ -80,13 +80,13 @@ void Graph::add_edge(int u, int v)
 {
 	if (this->nnodes < u)
 	{
-		fprintf(stderr, "there is no node in %d\n", u);
+		cerr << "there is no node in " << u << endl;
 		return;
 	}
 
 	if (this->nnodes < v)
 	{
-		fprintf(stderr, "there is no node in %d\n", v);
+		cerr << "there is no node in " << v << endl;
 		return;
 	}
 
@@ -106,7 +106,7 @@ Node* Graph::get_node(int u)
 {
 	if (this->nnodes < u)
 	{
-		fprintf(stderr, "there is no node in %d\n", u);
+		cerr << "there is no node in " << u << endl;
 		return NULL;
 	}
 	return &this->nodes[u];
@@ -116,7 +116,7 @@ int Graph::get_degree(int u)
 {
 	if (this->nnodes < u)
 	{
-		fprintf(stderr, "there is no node in %d\n", u);
+		cerr << "there is no node in " << u << endl;
 		return -1;
 	}
 
