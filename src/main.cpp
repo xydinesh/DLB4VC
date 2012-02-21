@@ -2,13 +2,20 @@
 #include "Graph.h"
 #include "BuilderFactory.h"
 #include <iostream>
-
+#include <stdio.h>
+#include "log.h"
 using namespace std;
 using namespace dlb;
 
 int main()
 {
 	cout << "dinesh" << endl;
+    char x[100];
+    char xe[100];
+    sprintf(x, "graph.log");
+    sprintf(xe, "graph.log");
+    // 1: debug , 5: critical
+    LOG_INIT(x, xe, 1);
 
 	Node n;
 	
@@ -46,7 +53,31 @@ int main()
 	b->set_filename("../sh2-5.dim");
 	ng = b->build_graph();
 
-	cout << ng->get_nnodes() << endl;
+    //delete ng;
+    DEBUG("starting plane.dim graph\n");
+    b->set_filename("../plane.dim");
+    ng = b->build_graph();
 
+    DEBUG("nodes: %d\n", ng->get_nnodes());
+    cout << ng->get_nnodes() << endl;
+
+    ng->delete_edge(11, 12);
+    ng->delete_node(12);
+
+    DEBUG("nodes: %d\n", ng->get_nnodes());
+    for (int i = 0; i < ng->get_nnodes(); i++)
+    {
+        cout << i << ":";
+        for (int j = 0; j < ng->get_nnodes(); j++)
+        {
+
+            if (ng->is_edge(i, j))
+            {
+                cout << j << " ";
+            }
+        }
+        cout << endl;
+    }
+    LOG_CLOSE();
 	return 0;
 }

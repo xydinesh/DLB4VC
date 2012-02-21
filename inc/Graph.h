@@ -12,6 +12,7 @@ namespace dlb {
 		vector<int> degree;
 		int nnodes;
 		int nedges;
+        int capacity;
 
 	public:
 		Graph();
@@ -25,6 +26,7 @@ namespace dlb {
 		int get_nnodes();
 		int get_nedges();
 		void print();
+        bool is_edge(int u, int v);
 	};
 }
 #endif //__DLB4VC_GRAPH_H__

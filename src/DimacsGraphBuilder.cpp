@@ -23,18 +23,20 @@ void DimacsGraphBuilder::split(const string &s, vector<int> &v)
 	string tmp;
 	int n;
 
-	for (int i = 0; i < (int)s.size(); i++)
+	for (int i = 0; i < (int)s.size(); )
 	{
 		tmp.clear();
 		while(isdigit(s[i]))
 		{
 			tmp += s[i];
-			i++;
+            i++;
 		}
 
-		stringstream s(tmp);
-		s >> n;
+		stringstream ss(tmp);
+		ss >> n;
 		v.push_back(n);
+
+		while(!isdigit(s[i])) i++;
 	}
 }
 
@@ -85,7 +87,7 @@ Graph* DimacsGraphBuilder::build_graph()
 		getline(infile, line);
 
 		split(line, elem);
-		//cout << elem[0] << ":" << elem[1] << endl;
+
 		if (elem.size() > 1)
 			g->add_edge(elem[0], elem[1]);
 	}

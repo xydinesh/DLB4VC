@@ -1,5 +1,6 @@
 # Set this to 0 if you do not have METIS
 CC = g++
+CFLAGS=-O0 -g3 -D__LOG_ENABLE__
 # source files.
 OBJ = $(SRC:.cpp=.o)
 #OUTLIB=../lib/libgraphdecomp.a
@@ -11,7 +12,7 @@ INCLUDES = -I../inc/
 LIBDIR=-L../lib 
 LIBS = $(LIBDIR) -lm
 # source
-SRC = Node.cpp Graph.cpp DimacsGraphBuilder.cpp BuiderFactory.cpp main.cpp
+SRC = Node.cpp Graph.cpp DimacsGraphBuilder.cpp BuiderFactory.cpp main.cpp log.cpp
 
 .SUFFIXES: .cpp
 

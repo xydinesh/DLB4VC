@@ -29,7 +29,7 @@ void Node::delete_nbr(int a)
 		this->nbrs.remove(a);
 		as = this->nbrs.size();
 
-		if (bs != as)
+		if (bs > as)
 		{
 			this->nbrs.push_back(a);
 			this->size--;

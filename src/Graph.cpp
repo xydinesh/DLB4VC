@@ -1,6 +1,7 @@
 #include "Graph.h"
 #include <stdlib.h>
 #include <iostream>
+#include "log.h"
 
 using namespace dlb;
 using namespace std;
@@ -9,6 +10,7 @@ Graph::Graph(void)
 {
 	this->nnodes = 0;
 	this->nedges = 0;
+    this->capacity = 0;
 }
 
 
@@ -21,12 +23,17 @@ int Graph::add_node()
 	Node n;
 	this->nodes.push_back(n);
 	this->degree.push_back(0);
+    this->capacity++;
 	return this->nnodes++;
 }
 
 void Graph::delete_node(int u)
 {
-	if (this->nnodes < u)
+    // we check agains graph capacity as it will not reduce when
+    // delete nodes where as nnodes will reduce with active number of
+    // nodes. 
+
+	if (this->capacity < u)
 	{
 		cerr << "there is no node in " << u << endl;
 		return;
@@ -52,13 +59,13 @@ void Graph::delete_node(int u)
 
 void Graph::delete_edge(int u, int v)
 {
-	if (this->nnodes < u)
+	if (this->capacity < u)
 	{
 		cerr << "there is no node in " << u << endl;
 		return;
 	}
 
-	if (this->nnodes < v)
+	if (this->capacity < v)
 	{
         cerr << "there is no node in " << v << endl;
 		return;
@@ -78,13 +85,13 @@ void Graph::delete_edge(int u, int v)
 
 void Graph::add_edge(int u, int v)
 {
-	if (this->nnodes < u)
+	if (this->capacity < u)
 	{
 		cerr << "there is no node in " << u << endl;
 		return;
 	}
 
-	if (this->nnodes < v)
+	if (this->capacity < v)
 	{
 		cerr << "there is no node in " << v << endl;
 		return;
@@ -104,7 +111,7 @@ void Graph::add_edge(int u, int v)
 
 Node* Graph::get_node(int u)
 {
-	if (this->nnodes < u)
+	if (this->capacity < u)
 	{
 		cerr << "there is no node in " << u << endl;
 		return NULL;
@@ -114,7 +121,7 @@ Node* Graph::get_node(int u)
 
 int Graph::get_degree(int u)
 {
-	if (this->nnodes < u)
+	if (this->capacity < u)
 	{
 		cerr << "there is no node in " << u << endl;
 		return -1;
@@ -140,4 +147,32 @@ void Graph::print()
 		cout << i << ":" << this->degree[i] << ":";
 		this->nodes[i].print();	
 	}
+}
+
+bool Graph::is_edge(int u, int v)
+{
+	if (this->capacity < u)
+	{
+		cerr << "there is no node in " << u << endl;
+		return false;
+	}
+
+	if (this->capacity < v)
+	{
+		cerr << "there is no node in " << v << endl;
+		return false;
+	}
+
+    if (u == v)
+        return false;
+
+    Node *n = this->get_node(u);
+    if (n->get_size() > 0)
+    {
+        list<int> *nbrs = n->get_nbrs();
+        list<int>::iterator it = nbrs->begin();
+        for (int j = 0; it != nbrs->end() && (j < this->degree[u]); ++it, j++)
+            if (*it == v) return true;
+    }
+    return false;
 }
