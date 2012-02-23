@@ -35,7 +35,7 @@ DimacsBuilderTests:DimacsBuilderTests.o
 	$(CC) $(INCLUDES) -o $@ $^ $(LIBS)
 
 clean:
-	$(RM) $(OBJ) $(EXE) *.log *~
+	@- $(RM) $(OBJ) $(EXE) *.log *~
 
 test:$(EXE)
 	for i in $^; do \
