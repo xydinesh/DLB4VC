@@ -14,7 +14,7 @@ INCLUDES = -I../inc/ -I $(GTEST_DIR)/include -I $(GTEST_DIR)
 LIBDIR=-L../lib 
 LIBS = $(LIBDIR) -lm -lgtest -ldlb4vc -lpthread
 # source
-SRC = NodeTests.cpp GraphTests.cpp DimacsFactoryTests.cpp
+SRC = NodeTests.cpp GraphTests.cpp DimacsBuilderTests.cpp
 
 .SUFFIXES: .cpp
 
@@ -33,8 +33,9 @@ GraphTests:GraphTests.o
 
 DimacsBuilderTests:DimacsBuilderTests.o
 	$(CC) $(INCLUDES) -o $@ $^ $(LIBS)
+
 clean:
-	@- $(RM) $(OBJ) $(EXE) *.log *~
+	$(RM) $(OBJ) $(EXE) *.log *~
 
 test:$(EXE)
 	for i in $^; do \
