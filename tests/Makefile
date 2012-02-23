@@ -17,11 +17,11 @@ INCLUDES = -I../inc/ -I $(GTEST_DIR)/include -I $(GTEST_DIR)
 LIBDIR=-L../lib 
 LIBS = $(LIBDIR) -lm -lgtest -ldlb4vc -lpthread
 # source
-SRC = NodeTests.cpp
+SRC = NodeTests.cpp GraphTests.cpp
 
 #.SUFFIXES: .cpp
 
-EXE=NodeTests
+EXE=NodeTests GraphTests
 all: $(EXE)
 
 .cpp.o:
@@ -30,6 +30,15 @@ all: $(EXE)
 NodeTests:NodeTests.o
 	$(CC) $(INCLUDES) -o $@ $^ $(LIBS)
 
+GraphTests:GraphTests.o
+	$(CC) $(INCLUDES) -o $@ $^ $(LIBS)
+
+
 clean:
-	@- $(RM) $(OBJ) $(EXE)
+	@- $(RM) $(OBJ) $(EXE) *.log *~
+
+test:$(EXE)
+	for i in $^; do \
+	./$$i;\
+	done
 
