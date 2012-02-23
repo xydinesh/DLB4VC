@@ -5,9 +5,6 @@ CFLAGS=-O3 -D__LOG_ENABLE__
 # source files.
 OBJ = $(SRC:.cpp=.o)
 
-# directories
-OUTLIB=libdlb.a
-
 # Unit tests
 GTEST_DIR=../gtest-1.6.0
 
@@ -17,12 +14,13 @@ INCLUDES = -I../inc/ -I $(GTEST_DIR)/include -I $(GTEST_DIR)
 LIBDIR=-L../lib 
 LIBS = $(LIBDIR) -lm -lgtest -ldlb4vc -lpthread
 # source
-SRC = NodeTests.cpp GraphTests.cpp
+SRC = NodeTests.cpp GraphTests.cpp DimacsFactoryTests.cpp
 
-#.SUFFIXES: .cpp
+.SUFFIXES: .cpp
 
-EXE=NodeTests GraphTests
-all: $(EXE)
+EXE= NodeTests GraphTests DimacsBuilderTests
+
+all:$(EXE)
 
 .cpp.o:
 	$(CC) $(INCLUDES) $(CFLAGS) -c $< $(LIBS)
@@ -33,7 +31,8 @@ NodeTests:NodeTests.o
 GraphTests:GraphTests.o
 	$(CC) $(INCLUDES) -o $@ $^ $(LIBS)
 
-
+DimacsBuilderTests:DimacsBuilderTests.o
+	$(CC) $(INCLUDES) -o $@ $^ $(LIBS)
 clean:
 	@- $(RM) $(OBJ) $(EXE) *.log *~
 
@@ -41,4 +40,5 @@ test:$(EXE)
 	for i in $^; do \
 	./$$i;\
 	done
+
 

@@ -1,5 +1,7 @@
 #include "Graph.h"
 #include "log.h"
+#include "Builder.h"
+#include "BuilderFactory.h"
 #include "gtest/gtest.h"
 
 using namespace std;
@@ -8,30 +10,29 @@ using namespace dlb;
 class DimacsBuilderTests: public testing::Test
 {
 public:
-    Graph g;
+    Graph *g;
+    Builder *b;
+    BuilderFactory bf;
 
 	virtual void SetUp()
 	{
 		LOG_INIT("graph.log", "graph.log", 0);
-
-        for (int i = 0; i < 5; i++)
-            g.add_node();
-
-        g.add_edge(0, 1);
-        g.add_edge(0, 4);
-        g.add_edge(1, 4);
-        g.add_edge(1, 2);
-        g.add_edge(2, 3);
-        g.add_edge(3, 4);
+        DEBUG("create graph data/plane.dim\n");
+        string s("dimacs");
+        b = bf.create_builder(s);
+        b->set_filename("../data/plane.dim");
+        g = b->build_graph();
 	}
 
 	virtual void TearDown()
 	{
+        delete b;
 		LOG_CLOSE();
 	}
 };
 
 TEST_F(DimacsBuilderTests, testGetNnodes)
 {
-	EXPECT_EQ(5, g.get_nnodes());
+    g->print();
+	EXPECT_EQ(13, g->get_nnodes());
 }
