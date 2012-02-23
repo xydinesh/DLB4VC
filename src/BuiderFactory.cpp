@@ -3,19 +3,19 @@
 
 using namespace dlb;
 
-GraphBuilderFactory::GraphBuilderFactory()
+BuilderFactory::BuilderFactory()
 {
 }
 
-GraphBuilderFactory::~GraphBuilderFactory()
+BuilderFactory::~BuilderFactory()
 {
 }
 
-GraphBuilder* GraphBuilderFactory::create_builder(string& name)
+Builder* BuilderFactory::create_builder(string& name)
 {
 	if (name.compare("DIMACS") == 0|| name.compare("dimacs") == 0 || name.compare("Dimacs") == 0)
 	{
-		return new DimacsGraphBuilder();
+		return new DimacsBuilder();
 	}
 
 	return NULL;

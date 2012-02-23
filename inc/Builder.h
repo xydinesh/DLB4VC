@@ -4,15 +4,15 @@
 
 namespace dlb {
 
-	class GraphBuilder
+	class Builder
 	{
 	protected:
 		const char *filename;
 
 	public:
-		GraphBuilder() {};
-		GraphBuilder(char const *f) : filename(f) {};
-		virtual ~GraphBuilder() {};
+		Builder() {};
+		Builder(char const *f) : filename(f) {};
+		virtual ~Builder() {};
 		virtual Graph* build_graph() = 0;
 		virtual void set_filename(const char *f) { filename = f;};
 	};
