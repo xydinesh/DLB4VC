@@ -1,6 +1,6 @@
 # Set this to 0 if you do not have METIS
 CC = g++
-CFLAGS=-O0 -g3 -D__LOG_ENABLE__
+CFLAGS=-O3 -D__LOG_ENABLE__
 
 # source files.
 OBJ = $(SRC:.cpp=.o)
