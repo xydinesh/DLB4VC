@@ -39,8 +39,8 @@ void Graph::delete_node(int u)
 		return;
 	}
 
-	list<int> *nbrs = this->nodes[u].get_nbrs();
-	list<int>::iterator it = nbrs->begin();
+	const list<int> *nbrs = this->nodes[u].get_nbrs();
+	list<int>::const_iterator it = nbrs->begin();
 
 	int j = 0;
 
@@ -169,8 +169,8 @@ bool Graph::is_edge(int u, int v)
     Node *n = this->get_node(u);
     if (n->get_size() > 0)
     {
-        list<int> *nbrs = n->get_nbrs();
-        list<int>::iterator it = nbrs->begin();
+        const list<int> *nbrs = n->get_nbrs();
+        list<int>::const_iterator it = nbrs->begin();
         for (int j = 0; it != nbrs->end() && (j < this->degree[u]); ++it, j++)
             if (*it == v) return true;
     }

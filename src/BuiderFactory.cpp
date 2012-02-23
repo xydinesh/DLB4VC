@@ -1,5 +1,5 @@
 #include "BuilderFactory.h"
-#include "DimacsGraphBuilder.h"
+#include "DimacsBuilder.h"
 
 using namespace dlb;
 

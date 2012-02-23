@@ -20,7 +20,7 @@ GTEST_INCLUDES= -I $(GTEST_DIR)/include -I $(GTEST_DIR)
 LIBDIR=-L../lib 
 LIBS = $(LIBDIR) -lm
 # source
-SRC = Node.cpp Graph.cpp DimacsGraphBuilder.cpp BuiderFactory.cpp main.cpp log.cpp
+SRC = Node.cpp Graph.cpp DimacsBuilder.cpp BuiderFactory.cpp main.cpp log.cpp
 
 .SUFFIXES: .cpp
 

@@ -23,7 +23,7 @@ int main()
 	n.add_nbr(5);
 	n.add_nbr(10);
 	n.print();
-	list<int> *nlist = n.get_nbrs();
+	const list<int> *nlist = n.get_nbrs();
 	n.delete_nbr(3);
 	n.delete_nbr(5);
 	n.print();
@@ -46,10 +46,10 @@ int main()
 	g.delete_node(0);
 	g.print();
 
-	GraphBuilderFactory f;
+	BuilderFactory f;
 	Graph *ng;
 	string gt("dimacs");
-	GraphBuilder *b = f.create_builder(gt);
+	Builder *b = f.create_builder(gt);
 	b->set_filename("../sh2-5.dim");
 	ng = b->build_graph();
 

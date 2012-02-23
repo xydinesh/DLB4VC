@@ -5,11 +5,11 @@
 
 namespace dlb {
 
-	class GraphBuilderFactory {
+	class BuilderFactory {
 	public:
-		GraphBuilderFactory();
-		virtual ~GraphBuilderFactory();
-		GraphBuilder* create_builder(string& name);
+		BuilderFactory();
+		virtual ~BuilderFactory();
+		Builder* create_builder(string& name);
 	};
 }
 #endif //__DLB4VC_BUILDER_FACTORY_H__
