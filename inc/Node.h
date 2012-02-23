@@ -12,7 +12,7 @@ namespace dlb {
 	public:
 		Node();
 		~Node();
-		list<int>* get_nbrs();
+		list<int> const * const get_nbrs();
 		int get_size() const;
 		void add_nbr(int i);
 		void delete_nbr(int i);

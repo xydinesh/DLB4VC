@@ -45,7 +45,7 @@ void Node::print()
 	cout << endl;
 }
 
-list<int>* Node::get_nbrs()
+list<int> const * const Node::get_nbrs()
 {
 	if (this->size > 0)
 		return &nbrs;
