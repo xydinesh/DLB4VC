@@ -12,7 +12,7 @@ Graph::Graph(void)
 	this->nedges = 0;
     this->capacity = 0;
     this->next_label = 0;
-    this->merge_map.clear();
+    this->fold_map.clear();
 }
 
 
@@ -55,7 +55,7 @@ void Graph::delete_node(int u)
 	}
 
 	this->nodes[u].remove();
-	this->degree[u] = -1;
+	this->degree[u] = 0;
 
 	return;
 }
@@ -191,15 +191,18 @@ int Graph::fold_node(int u)
     int ns = nlist->size();
 
     DEBUG("node: %d:%d\n", u, this->next_label);
-    merge_map[u] = this->next_label;
+    fold_map[u] = this->next_label;
     
     for (int i = 0; i < ns; i++)
     {
-        merge_map[nlist_vec[i]] = this->next_label;
+        fold_map[nlist_vec[i]] = this->next_label;
         const list<int> *nnlist = this->get_node(nlist_vec[i])->get_nbrs();
         list<int>::const_iterator it = nnlist->begin();
         for (; it != nnlist->end(); ++it)
+        {
             newlist.push_back(*it);
+            edge_map[nlist_vec[i]].push_back(*it);
+        }
         
         this->delete_node(nlist_vec[i]);
     }
@@ -218,11 +221,9 @@ int Graph::fold_node(int u)
         this->add_edge(this->next_label, *uit);
     }
     GEN("\n");
-
     
     return this->next_label++;
 }
-
 
 bool Graph::is_foldable(int u)
 {
@@ -241,4 +242,31 @@ bool Graph::is_foldable(int u)
     return !this->is_edge(a, b);
 }
 
+void Graph::debug_data()
+{
+    //print fold map
+    //print edge map
+    GEN("############### Fold Information ##################\n");
+    for (int i = 0; i < this->capacity; i++)
+    {
+        if (fold_map.count(i) > 0)
+        {
+            DEBUG("%d:%d\n", i, fold_map[i]);
+        }
+    }
 
+    GEN("############### Edge Information ##################\n");
+    for (int i = 0; i < this->capacity; i++)
+    {
+        if (edge_map.count(i) > 0)
+        {
+            DEBUG("edges for %d:\n", i);
+            list<int>::iterator it = edge_map[i].begin();
+            for (; it != edge_map[i].end(); ++it)
+            {
+                GEN("%d ", *it);
+            }
+            GEN("\n");
+        }
+    }
+}

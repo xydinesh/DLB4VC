@@ -1,6 +1,6 @@
 # Set this to 0 if you do not have METIS
 CC = g++
-CFLAGS=-O0 -g2 -D__LOG_ENABLE__
+CFLAGS=-O3 -g0 -D__LOG_ENABLE__
 
 # source files.
 OBJ = $(SRC:.cpp=.o)
@@ -20,7 +20,7 @@ GTEST_INCLUDES= -I $(GTEST_DIR)/include -I $(GTEST_DIR)
 LIBDIR=-L../lib 
 LIBS = $(LIBDIR) -lm
 # source
-SRC = Node.cpp Graph.cpp DimacsBuilder.cpp BuiderFactory.cpp main.cpp log.cpp
+SRC = Node.cpp Graph.cpp DimacsBuilder.cpp BuiderFactory.cpp main.cpp log.cpp GraphVC.cpp
 
 .SUFFIXES: .cpp
 
@@ -36,7 +36,7 @@ $(OUT): $(OBJ)
 	$(CC) -I../inc $(CFLAGS) $^ -o $@ $(INCLUDES) $(LIBS) -L../lib
 
 clean:
-	rm -f *.o \#* PI* core* *~ $(OBJ) $(OUT) $(OUTLIB) $(LIBGTEST)
+	rm -f *.o \#* PI* core* *~ $(OBJ) $(OUT) $(OUTLIB) $(LIBGTEST) *.log
 
 #---- no change below this line--------------------------------------------------
 gtest-all.o: ${GTEST_DIR}/src/gtest-all.cc

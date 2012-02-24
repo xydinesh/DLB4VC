@@ -9,17 +9,17 @@
 using namespace std;
 namespace dlb {
 	class Graph {
-	private:
+      protected:
 		vector<Node> nodes;
 		vector<int> degree;
 		int nnodes;
 		int nedges;
         int capacity;
         int next_label;
-        map<int, int> merge_map;
+        map<int, int> fold_map;
         map<int, list<int> >edge_map;
 
-	public:
+      public:
 		Graph();
 		virtual ~Graph();
 		Node* get_node(int i);
@@ -34,6 +34,7 @@ namespace dlb {
         bool is_edge(int u, int v);
         bool is_foldable(int u);
         int fold_node(int u);
+        void debug_data();
 	};
 }
 #endif //__DLB4VC_GRAPH_H__

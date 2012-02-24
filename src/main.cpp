@@ -22,7 +22,7 @@ int main()
 	Builder *b = f.create_builder(gt);
 
     DEBUG("starting plane.dim graph\n");
-    b->set_filename("../data/plane.dim");
+    b->set_filename("../data/sh2-5.dim");
     ng = b->build_graph();
 
     for (int i = 0; i < ng->get_nnodes(); i++)
@@ -35,6 +35,7 @@ int main()
     }
 
     ng->print();
+    ng->debug_data();
     LOG_CLOSE();
 	return 0;
 }
