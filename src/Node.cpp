@@ -30,10 +30,7 @@ void Node::delete_nbr(int a)
 		as = this->nbrs.size();
 
 		if (bs > as)
-		{
-			this->nbrs.push_back(a);
 			this->size--;
-		}
 	}
 }
 
@@ -59,5 +56,6 @@ int Node::get_size() const
 
 void Node::remove()
 {
-	this->size = -1;
+	this->size = 0;
 }
+

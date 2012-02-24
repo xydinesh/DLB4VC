@@ -11,6 +11,8 @@ Graph::Graph(void)
 	this->nnodes = 0;
 	this->nedges = 0;
     this->capacity = 0;
+    this->next_label = 0;
+    this->merge_map.clear();
 }
 
 
@@ -24,6 +26,7 @@ int Graph::add_node()
 	this->nodes.push_back(n);
 	this->degree.push_back(0);
     this->capacity++;
+    this->next_label++;
 	return this->nnodes++;
 }
 
@@ -142,10 +145,10 @@ int Graph::get_nedges()
 
 void Graph::print()
 {
-	for (int i = 0; i < this->nnodes; i++)
+	for (int i = 0; i < this->capacity; i++)
 	{
-		cout << i << ":" << this->degree[i] << ":";
-		this->nodes[i].print();	
+        cout << i << ":" << this->degree[i] << ":";
+        this->nodes[i].print();	
 	}
 }
 
@@ -176,3 +179,66 @@ bool Graph::is_edge(int u, int v)
     }
     return false;
 }
+
+int Graph::fold_node(int u)
+{
+    Node *n = this->get_node(u);
+    Node nn;
+
+    list<int> newlist;
+    const list<int> *nlist = n->get_nbrs();
+    vector<int> nlist_vec(nlist->begin(), nlist->end());
+    int ns = nlist->size();
+
+    DEBUG("node: %d:%d\n", u, this->next_label);
+    merge_map[u] = this->next_label;
+    
+    for (int i = 0; i < ns; i++)
+    {
+        merge_map[nlist_vec[i]] = this->next_label;
+        const list<int> *nnlist = this->get_node(nlist_vec[i])->get_nbrs();
+        list<int>::const_iterator it = nnlist->begin();
+        for (; it != nnlist->end(); ++it)
+            newlist.push_back(*it);
+        
+        this->delete_node(nlist_vec[i]);
+    }
+
+    this->nodes.push_back(nn);
+    this->degree.push_back(nn.get_size());
+    this->capacity++;
+
+    newlist.remove(u);
+    newlist.sort();
+    newlist.unique();
+    list<int>::iterator uit = newlist.begin();
+    for (; uit != newlist.end(); ++uit)
+    {
+        GEN("%d ", *uit);
+        this->add_edge(this->next_label, *uit);
+    }
+    GEN("\n");
+
+    
+    return this->next_label++;
+}
+
+
+bool Graph::is_foldable(int u)
+{
+    // In order to be foldable , a node has to have degree two and no
+    // edge between nbrs.
+
+    if (this->degree[u] != 2)
+        return false;
+
+    int a, b;
+    const list<int> *nlist = this->get_node(u)->get_nbrs();
+    list<int>::const_iterator it = nlist->begin();
+    a = *(it++);
+    b = *(it++);
+
+    return !this->is_edge(a, b);
+}
+
+

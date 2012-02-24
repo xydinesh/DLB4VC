@@ -3,6 +3,8 @@
 #include "Node.h"
 
 #include <vector>
+#include <map>
+#include <list>
 
 using namespace std;
 namespace dlb {
@@ -13,6 +15,9 @@ namespace dlb {
 		int nnodes;
 		int nedges;
         int capacity;
+        int next_label;
+        map<int, int> merge_map;
+        map<int, list<int> >edge_map;
 
 	public:
 		Graph();
@@ -27,6 +32,8 @@ namespace dlb {
 		int get_nedges();
 		void print();
         bool is_edge(int u, int v);
+        bool is_foldable(int u);
+        int fold_node(int u);
 	};
 }
 #endif //__DLB4VC_GRAPH_H__
