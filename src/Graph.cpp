@@ -1,6 +1,8 @@
 #include "Graph.h"
 #include <stdlib.h>
 #include <iostream>
+#include <climits>
+
 #include "log.h"
 
 using namespace dlb;
@@ -13,6 +15,7 @@ Graph::Graph(void)
     this->capacity = 0;
     this->next_label = 0;
     this->fold_nodes.clear();
+    this->minsize = INT_MAX;
 }
 
 
@@ -47,6 +50,7 @@ void Graph::delete_node(int u)
     while (!nbrs->empty())
 	{
         edge_stack.push_front(make_pair(nbrs->front(), u));
+        //DEBUG("%d:%d\n", nbrs->front(), u);
         this->delete_edge(nbrs->front(), u);
 	}
 
@@ -263,20 +267,20 @@ void Graph::debug_data()
         GEN("%d:%d\n", (*pit).first, (*pit).second);
 }
 
-
 int Graph::get_vertex()
 {
-    int max, index = 0;
+    int max = 0;
+    int index = -1;
+
     for (int i = 0; i < this->capacity; i++)
     {
-        if (this->get_degree(i) > max)
+        if (this->degree[i] > max)
         {
-            max = this->get_degree(i);
+            max = this->degree[i];
             index = i;
         }
     }
 
-    //DEBUG("max %d:%d\n", max, index);
     return index;
 }
 
@@ -285,22 +289,87 @@ int Graph::vertex_cover()
     int u = this->get_vertex();
     int stack_size = this->edge_stack.size();
 
-    DEBUG("u: %d:%d\n", u, stack_size);
+    if (u < 0)
+    {
+        if (vc.size() < minsize)
+        {
+            minvc = vc;
+            minsize = vc.size();
+            DEBUG("current min vc: %d\n", minsize);
+            list<int>::iterator it = vc.begin();
+            GEN("vc: ");
+            for (; it != vc.end(); ++it)
+                GEN(" %d ", *it);
+            GEN("\n");
+        }
+        return 0;
+    }
+
+    //DEBUG("u: %d:%d\n", u, stack_size);
     vc.push_back(u);
     this->delete_node(u);
 
-    stack_size = this->edge_stack.size();
-    DEBUG("u: %d:%d\n", u, stack_size);
+    this->vertex_cover();
 
-    int v = this->get_vertex();
-    DEBUG("v: %d:%d\n", v, stack_size);
+    int current_stack_size = this->edge_stack.size();
+    while (current_stack_size > stack_size)
+    {
+        pair<int,int> element = this->edge_stack.front();
+        this->add_edge(element.first, element.second);
+        this->edge_stack.pop_front();
+        current_stack_size --;
+    }
+
+    vc.remove(u);
+
+    const list<int> *nbrs = this->get_node(u)->get_nbrs();
+    while(!nbrs->empty())
+    {
+        vc.push_back(nbrs->front());
+        this->delete_node(nbrs->front());
+    }
+
+    this->vertex_cover();
+
+    current_stack_size = this->edge_stack.size();
+    while (current_stack_size > stack_size)
+    {
+        pair<int,int> element = this->edge_stack.front();
+        this->add_edge(element.first, element.second);
+        this->edge_stack.pop_front();
+        current_stack_size --;
+    }
+
+    nbrs = this->get_node(u)->get_nbrs();
+    list<int>::const_iterator it = nbrs->begin();
+    for (; it != nbrs->end(); ++it)
+        vc.remove(*it);
 
     return 0;
 }
 
 
+bool Graph::verify()
+{
+    list<int>::iterator it = minvc.begin();
+    GEN("vc: ");
+    for (; it != minvc.end(); ++it)
+    {
+        GEN("%d ", *it);
+        this->delete_node(*it);
+    }
+    GEN("\n");
 
+    for (int i = 0; i < this->capacity; i++)
+    {
+        if (this->degree[i] > 0)
+        {
+            DEBUG("invalid vertex cover, edges availabe in: %d\n", i);
+            return false;
+        }
+    }
 
-
-
+    DEBUG("valid vertex cover\n");
+    return true;
+}
 
