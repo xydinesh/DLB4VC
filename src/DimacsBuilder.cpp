@@ -92,6 +92,5 @@ Graph* DimacsBuilder::build_graph()
 			g->add_edge(elem[0], elem[1]);
 	}
 
-
 	return g;
 }

@@ -12,9 +12,13 @@ namespace dlb {
 	class GraphVC : public Graph 
     {
 
+      private:
+        list<pair<int,int>> edge_stack;
+        
       public:
 		GraphVC();
 		virtual ~GraphVC();
+        int vertex_cover();
 	};
 }
 #endif //__DLB4VC_GRAPHVC_H__

@@ -56,7 +56,7 @@ TEST_F(NodeTests, testAddNbrs)
 TEST_F(NodeTests, testNodeRemove)
 {
     n->remove();
-	EXPECT_EQ(-1, n->get_size());
+	EXPECT_EQ(0, n->get_size());
 }
 
 TEST_F(NodeTests, testGetNbrList)

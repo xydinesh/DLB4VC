@@ -36,7 +36,7 @@ int main()
     ng->print();
     ng->debug_data();
 
-    b->set_filename("../data/house.dim");
+    b->set_filename("../data/box.dim");
     ng = b->build_graph();
     ng->vertex_cover();
 

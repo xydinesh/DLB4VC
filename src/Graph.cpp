@@ -16,6 +16,7 @@ Graph::Graph(void)
     this->next_label = 0;
     this->fold_nodes.clear();
     this->minsize = INT_MAX;
+    this->ocapacity = 0;
 }
 
 
@@ -30,6 +31,7 @@ int Graph::add_node()
 	this->degree.push_back(0);
     this->capacity++;
     this->next_label++;
+    this->ocapacity++;
 	return this->nnodes++;
 }
 
@@ -291,29 +293,32 @@ int Graph::vertex_cover()
     int vc_size = this->vc.size();
     int next_label = this->next_label;
     int capacity = this->capacity;
+    int ufsize = 0;
 
     if (u < 0)
     {
-        if (vc.size() < minsize)
+        ufsize = this->unfold_vertex_cover();
+        if (ufsize < minsize)
         {
             DEBUG("fn size:%d\n", fold_nodes.size());
-            minvc = vc;
-            minsize = vc.size();
+            minvc = unfold_vc;
+            minsize = ufsize;
             DEBUG("current min vc: %d\n", minsize);
-            list<int>::iterator it = vc.begin();
+            list<int>::iterator it = unfold_vc.begin();
             GEN("vc: ");
-            for (; it != vc.end(); ++it)
+            for (; it != unfold_vc.end(); ++it)
                 GEN(" %d ", *it);
             GEN("\n");
         }
         return 0;
     }
 
-    //DEBUG("u: %d:%d\n", u, stack_size);
+    DEBUG("u: %d:%d\n", u, stack_size);
     vc.push_back(u);
     this->delete_node(u);
 
     // 1 - degree rule
+    //this->one_degree();
     this->two_degree();
     this->one_degree();
 
@@ -323,7 +328,8 @@ int Graph::vertex_cover()
     while (current_stack_size > stack_size)
     {
         pair<int,int> element = this->edge_stack.front();
-        this->add_edge(element.first, element.second);
+        if (element.first < next_label && element.second < next_label)
+            this->add_edge(element.first, element.second);
         this->edge_stack.pop_front();
         current_stack_size --;
     }
@@ -349,6 +355,7 @@ int Graph::vertex_cover()
     }
 
     // 1 - degree rule
+    //this->one_degree();
     this->two_degree();
     this->one_degree();
 
@@ -425,10 +432,15 @@ void Graph::two_degree()
     {
         if (this->degree[i] == 2)
         {
+            GEN("%d:%d", i, this->degree[i]);
             if (this->is_foldable(i))
+            {
+                DEBUG("folding : %d\n", i);
                 this->fold_node(i);   
+            }
             else
             {
+                DEBUG("two: %d\n", i);
                 const list<int> *nbrs = this->get_node(i)->get_nbrs();
                 int nbr = 0;
                 while(!nbrs->empty())
@@ -440,4 +452,51 @@ void Graph::two_degree()
             }
         }
     }
+}
+
+
+int Graph::unfold_vertex_cover()
+{
+    int fsz = fold_nodes.size();
+    if (fsz == 0)
+    {
+        unfold_vc = vc;
+        return vc.size();
+    }
+
+    DEBUG("unfolding\n");
+    list<int>::iterator vc_it = vc.begin();
+    map<int,bool> uf;
+    unfold_vc.clear();
+
+    for (; vc_it != vc.end(); ++vc_it)
+    {
+        DEBUG("vc: %d\n", *vc_it);
+        // check for normal/unfolded nodes
+        if (!fold_nodes.count(*vc_it) > 0)
+            unfold_vc.push_back(*vc_it);
+        else
+        {
+            list<int> fn = fold_nodes[*vc_it];
+            DEBUG("uf:%d\n", *vc_it);
+            uf[*vc_it] = true;
+            fn.pop_front();
+            unfold_vc.push_back(fn.front());
+            fn.pop_front();
+            unfold_vc.push_back(fn.front());
+        }
+    }
+
+    map<int, list<int> >::iterator fn_it = fold_nodes.begin();
+    for (; fn_it != fold_nodes.end(); ++fn_it)
+    {
+        // check whether it is already unfolded
+        if (!uf.count((*fn_it).first) > 0)
+        {
+            DEBUG("notvc:%d\n", (*fn_it).second.front());
+            unfold_vc.push_back((*fn_it).second.front());
+        }
+    }
+
+    return unfold_vc.size();
 }

@@ -14,11 +14,11 @@ INCLUDES = -I../inc/ -I $(GTEST_DIR)/include -I $(GTEST_DIR)
 LIBDIR=-L../lib 
 LIBS = $(LIBDIR) -lm -lgtest -ldlb4vc -lpthread
 # source
-SRC = NodeTests.cpp GraphTests.cpp DimacsBuilderTests.cpp
+SRC = NodeTests.cpp GraphTests.cpp DimacsBuilderTests.cpp VertexCoverTests.cpp
 
 .SUFFIXES: .cpp
 
-EXE= NodeTests GraphTests DimacsBuilderTests
+EXE= NodeTests GraphTests DimacsBuilderTests VertexCoverTests
 
 all:$(EXE)
 
@@ -32,6 +32,9 @@ GraphTests:GraphTests.o
 	$(CC) $(INCLUDES) -o $@ $^ $(LIBS)
 
 DimacsBuilderTests:DimacsBuilderTests.o
+	$(CC) $(INCLUDES) -o $@ $^ $(LIBS)
+
+VertexCoverTests:VertexCoverTests.o
 	$(CC) $(INCLUDES) -o $@ $^ $(LIBS)
 
 clean:

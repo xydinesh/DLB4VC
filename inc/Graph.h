@@ -15,9 +15,16 @@ namespace dlb {
 		int nnodes;
 		int nedges;
         int capacity;
+        int ocapacity;
         int next_label;
-        map<int, int> fold_map;
-        map<int, list<int> >edge_map;
+
+        map<int, list<int> >fold_nodes;
+        list< pair<int,int> > edge_stack;
+
+        list<int> vc;
+        list<int> unfold_vc;
+        list<int> minvc;
+        int minsize;
 
       public:
 		Graph();
@@ -35,6 +42,13 @@ namespace dlb {
         bool is_foldable(int u);
         int fold_node(int u);
         void debug_data();
+
+        int vertex_cover();
+        int get_vertex();
+        bool verify();
+        void one_degree();
+        void two_degree();
+        int unfold_vertex_cover();
 	};
 }
 #endif //__DLB4VC_GRAPH_H__
