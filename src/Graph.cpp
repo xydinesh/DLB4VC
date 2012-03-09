@@ -12,7 +12,7 @@ Graph::Graph(void)
 	this->nedges = 0;
     this->capacity = 0;
     this->next_label = 0;
-    this->fold_map.clear();
+    this->fold_nodes.clear();
 }
 
 
@@ -32,7 +32,7 @@ int Graph::add_node()
 
 void Graph::delete_node(int u)
 {
-    // we check agains graph capacity as it will not reduce when
+    // we check against graph capacity as it will not reduce when
     // delete nodes where as nnodes will reduce with active number of
     // nodes. 
 
@@ -43,15 +43,11 @@ void Graph::delete_node(int u)
 	}
 
 	const list<int> *nbrs = this->nodes[u].get_nbrs();
-	list<int>::const_iterator it = nbrs->begin();
 
-	int j = 0;
-
-	for (; it != nbrs->end() && (j < this->degree[u]); ++it, j++)
+    while (!nbrs->empty())
 	{
-		this->nodes[*it].delete_nbr(u);
-		this->degree[*it]--;
-		this->nedges --;
+        edge_stack.push_front(make_pair(nbrs->front(), u));
+        this->delete_edge(nbrs->front(), u);
 	}
 
 	this->nodes[u].remove();
@@ -187,26 +183,27 @@ int Graph::fold_node(int u)
 
     list<int> newlist;
     const list<int> *nlist = n->get_nbrs();
-    vector<int> nlist_vec(nlist->begin(), nlist->end());
-    int ns = nlist->size();
 
     DEBUG("node: %d:%d\n", u, this->next_label);
-    fold_map[u] = this->next_label;
-    
-    for (int i = 0; i < ns; i++)
+    fold_nodes[this->next_label].push_back(u);
+
+    while(!nlist->empty())
     {
-        fold_map[nlist_vec[i]] = this->next_label;
-        const list<int> *nnlist = this->get_node(nlist_vec[i])->get_nbrs();
+        int ni = nlist->front();
+        fold_nodes[this->next_label].push_back(ni);
+        
+        // Get nbrs of the current node(u)'s nbrs
+        // and add them to a newlist in order to create a new node.
+        const list<int> *nnlist = this->get_node(ni)->get_nbrs();
         list<int>::const_iterator it = nnlist->begin();
         for (; it != nnlist->end(); ++it)
-        {
             newlist.push_back(*it);
-            edge_map[nlist_vec[i]].push_back(*it);
-        }
         
-        this->delete_node(nlist_vec[i]);
+        // deleted edges added into edge_stack
+        this->delete_node(ni);
     }
 
+    // Here we increase the capacity of the graph.
     this->nodes.push_back(nn);
     this->degree.push_back(nn.get_size());
     this->capacity++;
@@ -246,27 +243,64 @@ void Graph::debug_data()
 {
     //print fold map
     //print edge map
-    GEN("############### Fold Information ##################\n");
+    //print fold_nodes
+    GEN("############### Fold Node Information ##################\n");
     for (int i = 0; i < this->capacity; i++)
     {
-        if (fold_map.count(i) > 0)
+        if (fold_nodes.count(i) > 0)
         {
-            DEBUG("%d:%d\n", i, fold_map[i]);
+            list<int>::iterator it = fold_nodes[i].begin();
+            DEBUG("%d: ", i);
+            for (; it != fold_nodes[i].end(); ++it)
+                GEN(" %d ", *it);
+            GEN("\n");
         }
     }
 
     GEN("############### Edge Information ##################\n");
+    list< pair<int,int> >::iterator pit = edge_stack.begin();
+    for (; pit != edge_stack.end(); ++pit)
+        GEN("%d:%d\n", (*pit).first, (*pit).second);
+}
+
+
+int Graph::get_vertex()
+{
+    int max, index = 0;
     for (int i = 0; i < this->capacity; i++)
     {
-        if (edge_map.count(i) > 0)
+        if (this->get_degree(i) > max)
         {
-            DEBUG("edges for %d:\n", i);
-            list<int>::iterator it = edge_map[i].begin();
-            for (; it != edge_map[i].end(); ++it)
-            {
-                GEN("%d ", *it);
-            }
-            GEN("\n");
+            max = this->get_degree(i);
+            index = i;
         }
     }
+
+    //DEBUG("max %d:%d\n", max, index);
+    return index;
 }
+
+int Graph::vertex_cover()
+{
+    int u = this->get_vertex();
+    int stack_size = this->edge_stack.size();
+
+    DEBUG("u: %d:%d\n", u, stack_size);
+    vc.push_back(u);
+    this->delete_node(u);
+
+    stack_size = this->edge_stack.size();
+    DEBUG("u: %d:%d\n", u, stack_size);
+
+    int v = this->get_vertex();
+    DEBUG("v: %d:%d\n", v, stack_size);
+
+    return 0;
+}
+
+
+
+
+
+
+
