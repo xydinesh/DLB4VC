@@ -9,7 +9,6 @@ using namespace dlb;
 
 int main()
 {
-	cout << "dinesh" << endl;
     char x[100];
     char xe[100];
     sprintf(x, "graph.log");
@@ -22,7 +21,7 @@ int main()
 	Builder *b = f.create_builder(gt);
 
     DEBUG("starting plane.dim graph\n");
-    b->set_filename("../data/sh2-5.dim");
+    b->set_filename("../data/box.dim");
     ng = b->build_graph();
 
     for (int i = 0; i < ng->get_nnodes(); i++)
@@ -36,6 +35,15 @@ int main()
 
     ng->print();
     ng->debug_data();
+
+    b->set_filename("../data/house.dim");
+    ng = b->build_graph();
+    ng->vertex_cover();
+
+    ng->print();
+
+    ng->verify();
+    
     LOG_CLOSE();
 	return 0;
 }
