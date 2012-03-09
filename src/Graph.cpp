@@ -288,11 +288,15 @@ int Graph::vertex_cover()
 {
     int u = this->get_vertex();
     int stack_size = this->edge_stack.size();
+    int vc_size = this->vc.size();
+    int next_label = this->next_label;
+    int capacity = this->capacity;
 
     if (u < 0)
     {
         if (vc.size() < minsize)
         {
+            DEBUG("fn size:%d\n", fold_nodes.size());
             minvc = vc;
             minsize = vc.size();
             DEBUG("current min vc: %d\n", minsize);
@@ -309,6 +313,10 @@ int Graph::vertex_cover()
     vc.push_back(u);
     this->delete_node(u);
 
+    // 1 - degree rule
+    this->two_degree();
+    this->one_degree();
+
     this->vertex_cover();
 
     int current_stack_size = this->edge_stack.size();
@@ -320,7 +328,18 @@ int Graph::vertex_cover()
         current_stack_size --;
     }
 
-    vc.remove(u);
+    int current_vc_size = this->vc.size();
+    while (current_vc_size > vc_size)
+    {
+        vc.pop_back();
+        current_vc_size --;
+    }
+
+    // restoring capacity and next labels
+    this->capacity = capacity;
+    this->next_label = next_label;
+    this->degree.resize(capacity);
+    this->nodes.resize(capacity);
 
     const list<int> *nbrs = this->get_node(u)->get_nbrs();
     while(!nbrs->empty())
@@ -328,6 +347,10 @@ int Graph::vertex_cover()
         vc.push_back(nbrs->front());
         this->delete_node(nbrs->front());
     }
+
+    // 1 - degree rule
+    this->two_degree();
+    this->one_degree();
 
     this->vertex_cover();
 
@@ -340,10 +363,19 @@ int Graph::vertex_cover()
         current_stack_size --;
     }
 
-    nbrs = this->get_node(u)->get_nbrs();
-    list<int>::const_iterator it = nbrs->begin();
-    for (; it != nbrs->end(); ++it)
-        vc.remove(*it);
+    current_vc_size = this->vc.size();
+    while (current_vc_size > vc_size)
+    {
+        vc.pop_back();
+        current_vc_size --;
+    }
+
+    // restoring capacity and next labels
+    this->capacity = capacity;
+    this->next_label = next_label;
+    this->degree.resize(capacity);
+    this->nodes.resize(capacity);
+
 
     return 0;
 }
@@ -373,3 +405,39 @@ bool Graph::verify()
     return true;
 }
 
+
+void Graph::one_degree()
+{
+    for (int i = 0; i < this->capacity; i++)
+    {
+        if (this->degree[i] == 1)
+        {
+            int nbr = this->get_node(i)->get_nbrs()->front();
+            vc.push_back(nbr);
+            this->delete_node(nbr);
+        }
+    }
+}
+
+void Graph::two_degree()
+{
+    for (int i = 0; i < this->capacity; i++)
+    {
+        if (this->degree[i] == 2)
+        {
+            if (this->is_foldable(i))
+                this->fold_node(i);   
+            else
+            {
+                const list<int> *nbrs = this->get_node(i)->get_nbrs();
+                int nbr = 0;
+                while(!nbrs->empty())
+                {
+                    nbr = nbrs->front();
+                    vc.push_back(nbr);
+                    this->delete_node(nbr);
+                }
+            }
+        }
+    }
+}
