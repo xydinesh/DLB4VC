@@ -190,7 +190,7 @@ int Graph::fold_node(int u)
     list<int> newlist;
     const list<int> *nlist = n->get_nbrs();
 
-    DEBUG("node: %d:%d\n", u, this->next_label);
+    //DEBUG("node: %d:%d\n", u, this->next_label);
     fold_nodes[this->next_label].push_back(u);
 
     while(!nlist->empty())
@@ -220,10 +220,10 @@ int Graph::fold_node(int u)
     list<int>::iterator uit = newlist.begin();
     for (; uit != newlist.end(); ++uit)
     {
-        GEN("%d ", *uit);
+        //GEN("%d ", *uit);
         this->add_edge(this->next_label, *uit);
     }
-    GEN("\n");
+    //GEN("\n");
     
     return this->next_label++;
 }
@@ -300,25 +300,25 @@ int Graph::vertex_cover()
         ufsize = this->unfold_vertex_cover();
         if (ufsize < minsize)
         {
-            DEBUG("fn size:%d\n", fold_nodes.size());
+            //DEBUG("fn size:%d\n", fold_nodes.size());
             minvc = unfold_vc;
             minsize = ufsize;
             DEBUG("current min vc: %d\n", minsize);
-            list<int>::iterator it = unfold_vc.begin();
-            GEN("vc: ");
-            for (; it != unfold_vc.end(); ++it)
-                GEN(" %d ", *it);
-            GEN("\n");
+            //list<int>::iterator it = unfold_vc.begin();
+            //GEN("vc: ");
+            //for (; it != unfold_vc.end(); ++it)
+            //   GEN(" %d ", *it);
+            //GEN("\n");
         }
         return 0;
     }
 
-    DEBUG("u: %d:%d\n", u, stack_size);
+    //DEBUG("u: %d:%d\n", u, stack_size);
     vc.push_back(u);
     this->delete_node(u);
 
     // 1 - degree rule
-    //this->one_degree();
+    this->one_degree();
     this->two_degree();
     this->one_degree();
 
@@ -348,7 +348,8 @@ int Graph::vertex_cover()
     while (this->next_label > next_label)
     {
         this->next_label --;
-        //this->delete_node(this->next_label);
+        if (this->degree[this->next_label] > 0)
+            this->delete_node(this->next_label);
         this->fold_nodes.erase(this->next_label);
     }
 
@@ -365,12 +366,12 @@ int Graph::vertex_cover()
 
     // 1 - degree rule
     //this->one_degree();
-    this->two_degree();
-    this->one_degree();
+    //this->two_degree();
+    //this->one_degree();
 
     this->vertex_cover();
 
-    current_stack_size = this->edge_stack.size();
+/*    current_stack_size = this->edge_stack.size();
     while (current_stack_size > stack_size)
     {
         pair<int,int> element = this->edge_stack.front();
@@ -393,14 +394,15 @@ int Graph::vertex_cover()
     while (this->next_label > next_label)
     {
         this->next_label --;
-        //this->delete_node(this->next_label);
+        if (this->degree[this->next_label] > 0)
+            this->delete_node(this->next_label);
         this->fold_nodes.erase(this->next_label);
     }
 
     this->capacity = capacity;
     this->degree.resize(capacity);
     this->nodes.resize(capacity);
-
+*/
 
     return 0;
 }
@@ -408,6 +410,7 @@ int Graph::vertex_cover()
 
 bool Graph::verify()
 {
+    DEBUG("verify\n");
     list<int>::iterator it = minvc.begin();
     GEN("vc: ");
     for (; it != minvc.end(); ++it)
@@ -450,15 +453,15 @@ void Graph::two_degree()
     {
         if (this->degree[i] == 2)
         {
-            GEN("%d:%d", i, this->degree[i]);
+            //GEN("%d:%d\n", i, this->degree[i]);
             if (this->is_foldable(i))
             {
-                DEBUG("folding : %d\n", i);
+                //DEBUG("folding : %d\n", i);
                 this->fold_node(i);   
             }
             else
             {
-                DEBUG("two: %d\n", i);
+                //DEBUG("two: %d\n", i);
                 const list<int> *nbrs = this->get_node(i)->get_nbrs();
                 int nbr = 0;
                 while(!nbrs->empty())
@@ -481,8 +484,9 @@ int Graph::unfold_vertex_cover()
         unfold_vc = vc;
         return vc.size();
     }
-    DEBUG("ocapacity: %d\n", this->ocapacity);
-    DEBUG("unfolding\n");
+    
+    //DEBUG("ocapacity: %d\n", this->ocapacity);
+    //DEBUG("unfolding\n");
     list<int>::iterator vc_it = vc.begin();
     uf_touch.clear();
     unfold_vc.clear();
@@ -560,3 +564,41 @@ void Graph::unfold_vertex(int u, bool in, vector<int> &n)
     
     return;
 }
+
+
+void Graph::restore()
+{
+    int current_stack_size = this->edge_stack.size();
+    while (current_stack_size > 0)
+    {
+        pair<int,int> element = this->edge_stack.front();
+
+        // Not restoring edges with folded nodes.
+        if (element.first < next_label && element.second < next_label)
+            this->add_edge(element.first, element.second);
+        this->edge_stack.pop_front();
+        current_stack_size --;
+    }
+
+    int current_vc_size = vc.size();
+    while (current_vc_size > 0)
+    {
+        vc.pop_back();
+        current_vc_size --;
+    }
+
+    // restoring capacity and next labels
+    while (this->next_label > this->ocapacity)
+    {
+        this->next_label --;
+        if (this->degree[this->next_label] > 0)
+            this->delete_node(this->next_label);
+        this->fold_nodes.erase(this->next_label);
+    }
+
+    this->capacity = this->ocapacity;
+    this->degree.resize(capacity);
+    this->nodes.resize(capacity);
+
+}
+
