@@ -20,6 +20,7 @@ namespace dlb {
 
         map<int, list<int> >fold_nodes;
         list< pair<int,int> > edge_stack;
+        map<int, int> uf_touch;
 
         list<int> vc;
         list<int> unfold_vc;
@@ -49,6 +50,7 @@ namespace dlb {
         void one_degree();
         void two_degree();
         int unfold_vertex_cover();
+        void unfold_vertex(int u, bool in, vector<int> &n);
 	};
 }
 #endif //__DLB4VC_GRAPH_H__

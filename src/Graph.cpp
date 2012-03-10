@@ -365,7 +365,8 @@ int Graph::vertex_cover()
     while (current_stack_size > stack_size)
     {
         pair<int,int> element = this->edge_stack.front();
-        this->add_edge(element.first, element.second);
+        if (element.first < next_label && element.second < next_label)
+            this->add_edge(element.first, element.second);
         this->edge_stack.pop_front();
         current_stack_size --;
     }
@@ -463,40 +464,85 @@ int Graph::unfold_vertex_cover()
         unfold_vc = vc;
         return vc.size();
     }
-
+    DEBUG("ocapacity: %d\n", this->ocapacity);
     DEBUG("unfolding\n");
     list<int>::iterator vc_it = vc.begin();
-    map<int,bool> uf;
+    uf_touch.clear();
     unfold_vc.clear();
 
     for (; vc_it != vc.end(); ++vc_it)
     {
         DEBUG("vc: %d\n", *vc_it);
         // check for normal/unfolded nodes
-        if (!fold_nodes.count(*vc_it) > 0)
+        if (this->ocapacity > *vc_it)
             unfold_vc.push_back(*vc_it);
         else
         {
-            list<int> fn = fold_nodes[*vc_it];
-            DEBUG("uf:%d\n", *vc_it);
-            uf[*vc_it] = true;
-            fn.pop_front();
-            unfold_vc.push_back(fn.front());
-            fn.pop_front();
-            unfold_vc.push_back(fn.front());
+            uf_touch[*vc_it] = 1;
+            vector<int> fn;
+            int fnz;
+
+            DEBUG("uf:%d\n", *vc_it);            
+            this->unfold_vertex(*vc_it, true, fn);
+            fnz = fn.size();
+            
+            for (int i = 0; i < fnz; i++)
+            {
+                DEBUG("fnz: %d\n", fn[i]);
+                unfold_vc.push_back(fn[i]);
+            }
         }
     }
 
-    map<int, list<int> >::iterator fn_it = fold_nodes.begin();
-    for (; fn_it != fold_nodes.end(); ++fn_it)
+    map<int, list<int> >::reverse_iterator fn_it = fold_nodes.rbegin();
+    for (; fn_it != fold_nodes.rend(); ++fn_it)
     {
         // check whether it is already unfolded
-        if (!uf.count((*fn_it).first) > 0)
+        if (!uf_touch.count((*fn_it).first) > 0)
         {
-            DEBUG("notvc:%d\n", (*fn_it).second.front());
-            unfold_vc.push_back((*fn_it).second.front());
+            DEBUG("notvc:%d\n", (*fn_it).first);
+            vector<int> fn;
+            int fnz;
+
+            this->unfold_vertex((*fn_it).first, false, fn);
+            fnz = fn.size();
+            
+            for (int i = 0; i < fnz; i++)
+            {
+                DEBUG("fnz: %d\n", fn[i]);
+                unfold_vc.push_back(fn[i]);
+            }
         }
+
+    }
+    unfold_vc.sort();
+    unfold_vc.unique();
+    return unfold_vc.size();
+}
+
+void Graph::unfold_vertex(int u, bool in, vector<int> &n)
+{
+    if (this->ocapacity > u)
+    {
+        if (in)
+            n.push_back(u);
+        
+        return;
     }
 
-    return unfold_vc.size();
+    list<int>::iterator it = this->fold_nodes[u].begin();
+    vector<int> ut;
+    vector<int> uf;
+
+    this->uf_touch[u] = 1;
+    
+    uf.push_back(*it++);
+    ut.push_back(*it++);
+    ut.push_back(*it++);
+    
+    this->unfold_vertex(uf[0], !in, n);
+    this->unfold_vertex(ut[0], in, n);
+    this->unfold_vertex(ut[1], in, n);
+    
+    return;
 }
