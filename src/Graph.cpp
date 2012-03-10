@@ -328,6 +328,8 @@ int Graph::vertex_cover()
     while (current_stack_size > stack_size)
     {
         pair<int,int> element = this->edge_stack.front();
+
+        // Not restoring edges with folded nodes.
         if (element.first < next_label && element.second < next_label)
             this->add_edge(element.first, element.second);
         this->edge_stack.pop_front();
@@ -342,8 +344,15 @@ int Graph::vertex_cover()
     }
 
     // restoring capacity and next labels
+
+    while (this->next_label > next_label)
+    {
+        this->next_label --;
+        //this->delete_node(this->next_label);
+        this->fold_nodes.erase(this->next_label);
+    }
+
     this->capacity = capacity;
-    this->next_label = next_label;
     this->degree.resize(capacity);
     this->nodes.resize(capacity);
 
@@ -365,6 +374,8 @@ int Graph::vertex_cover()
     while (current_stack_size > stack_size)
     {
         pair<int,int> element = this->edge_stack.front();
+
+        // Not restoring edges with folded nodes.
         if (element.first < next_label && element.second < next_label)
             this->add_edge(element.first, element.second);
         this->edge_stack.pop_front();
@@ -379,8 +390,14 @@ int Graph::vertex_cover()
     }
 
     // restoring capacity and next labels
+    while (this->next_label > next_label)
+    {
+        this->next_label --;
+        //this->delete_node(this->next_label);
+        this->fold_nodes.erase(this->next_label);
+    }
+
     this->capacity = capacity;
-    this->next_label = next_label;
     this->degree.resize(capacity);
     this->nodes.resize(capacity);
 
@@ -472,7 +489,6 @@ int Graph::unfold_vertex_cover()
 
     for (; vc_it != vc.end(); ++vc_it)
     {
-        DEBUG("vc: %d\n", *vc_it);
         // check for normal/unfolded nodes
         if (this->ocapacity > *vc_it)
             unfold_vc.push_back(*vc_it);
@@ -482,13 +498,11 @@ int Graph::unfold_vertex_cover()
             vector<int> fn;
             int fnz;
 
-            DEBUG("uf:%d\n", *vc_it);            
             this->unfold_vertex(*vc_it, true, fn);
             fnz = fn.size();
             
             for (int i = 0; i < fnz; i++)
             {
-                DEBUG("fnz: %d\n", fn[i]);
                 unfold_vc.push_back(fn[i]);
             }
         }
@@ -500,16 +514,14 @@ int Graph::unfold_vertex_cover()
         // check whether it is already unfolded
         if (!uf_touch.count((*fn_it).first) > 0)
         {
-            DEBUG("notvc:%d\n", (*fn_it).first);
             vector<int> fn;
             int fnz;
 
             this->unfold_vertex((*fn_it).first, false, fn);
             fnz = fn.size();
-            
+
             for (int i = 0; i < fnz; i++)
             {
-                DEBUG("fnz: %d\n", fn[i]);
                 unfold_vc.push_back(fn[i]);
             }
         }
@@ -520,6 +532,8 @@ int Graph::unfold_vertex_cover()
     return unfold_vc.size();
 }
 
+
+// A recursive function to unfold chain of folded nodes.
 void Graph::unfold_vertex(int u, bool in, vector<int> &n)
 {
     if (this->ocapacity > u)
