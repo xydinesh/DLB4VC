@@ -47,6 +47,7 @@ void Graph::delete_node(int u)
   for (; it != nbrs->end(); ++it)
     {
       this->nodes[*it].delete_nbr(u);
+      this->degree[*it]--;
       this->nedges --;
     }
 

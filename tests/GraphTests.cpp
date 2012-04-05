@@ -55,6 +55,26 @@ TEST_F(GraphTests, testNEdges)
   EXPECT_EQ(4, g.get_nedges());
 }
 
+TEST_F(GraphTests, testDeleteEdge)
+{
+  g.delete_edge(0, 4);
+  g.delete_edge(2, 3);
+  EXPECT_EQ(4, g.get_nedges());
+}
+
+TEST_F(GraphTests, testGetDegree)
+{
+  EXPECT_EQ(2, g.get_degree(0));
+  EXPECT_EQ(3, g.get_degree(1));
+  g.delete_edge(0, 1);
+  EXPECT_EQ(1, g.get_degree(0));
+  EXPECT_EQ(3, g.get_degree(4));
+  g.delete_node(3);
+  EXPECT_EQ(0, g.get_degree(3));
+  EXPECT_EQ(2, g.get_degree(4));
+}
+
+
 TEST_F(GraphTests, testIsEdge)
 {
   EXPECT_EQ(6, g.get_nedges());
