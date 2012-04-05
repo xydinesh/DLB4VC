@@ -30,7 +30,10 @@ void Node::delete_nbr(int a)
 		as = this->nbrs.size();
 
 		if (bs > as)
+        {
+            this->dnbrs.push_front(a);
 			this->size--;
+        }
 	}
 }
 

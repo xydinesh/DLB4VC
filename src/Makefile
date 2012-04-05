@@ -27,7 +27,7 @@ SRC = Node.cpp Graph.cpp DimacsBuilder.cpp BuiderFactory.cpp main.cpp log.cpp
 all: $(OUTLIB) $(OUT) $(LIBGTEST)
 
 .cpp.o:
-	$(CC) $(INCLUDES) $(CFLAGS) -c $< $(LIBS)
+	$(CC) $(INCLUDES) $(CFLAGS) -c $<
 
 $(OUTLIB): $(OBJ)
 	ar -rv $(OUTLIB) $^

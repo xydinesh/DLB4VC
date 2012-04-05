@@ -8,6 +8,7 @@ namespace dlb {
 	class Node {
 	private:
 		list<int> nbrs;
+        list<int> dnbrs;
 		int size;
 	public:
 		Node();
