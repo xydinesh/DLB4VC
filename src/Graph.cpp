@@ -185,3 +185,98 @@ bool Graph::is_edge(int u, int v)
 }
 
 
+int Graph::select_vertex()
+{
+  int min = INT_MAX;
+  int index = -1;
+
+  for (int i = 0; i < this->capacity; i++)
+    {
+      if (this->degree[i] > 0)
+        {
+          if (this->degree[i] < min)
+            {
+              min = this->degree[i];
+              index = i;
+            }
+        }
+    }
+
+  return index;
+}
+
+bool Graph::verify()
+{
+  for (int i = 0; i < this->capacity; i++)
+    {
+      if (this->degree[i] >  0)
+        {
+          cerr << "Vertex : " << i << " Degree : " << this->degree[i] << endl;
+          return false;
+        }
+    }
+
+  return true;
+}
+
+void Graph::restore(vector<int>& indegree)
+{
+  for (int i = 0; i < this->capacity; i++)
+    {
+      int diff = indegree[i] - this->degree[i];
+      if (diff > 0)
+        {
+          this->nodes[i].undelete_nbrs(diff);
+          this->degree[i] = indegree[i];
+        }
+    }
+
+}
+
+bool Graph::vertex_cover(int k1)
+{
+  int k = k1;
+
+  if (k < 0)
+    {
+      return this->verify();
+    }
+
+  vector<int> indegree = this->degree;
+  int u = this->select_vertex();
+  int vcsize = this->vc.size();
+
+  if (u < 0)
+    {
+      return this->verify();
+    }
+
+  const list<int> *nbrs = this->nodes[u].get_nbrs();
+  list<int>::const_iterator it = nbrs->begin();
+
+  for (; it != nbrs->end() && (k >= 0); ++it, k--)
+    {
+      vc.push_back(*it);
+      this->delete_node(*it);
+    }
+  
+
+  bool ret = this->vertex_cover(k);
+
+  if (ret == true)
+    return true;
+
+  int vcdiff = this->vc.size() - vcsize;
+  this->restore(indegree);
+  k = k1;
+  while (vcdiff >= 0)
+    vc.pop_back();
+
+  vc.push_back(u);
+  k--;
+  this->delete_node(u);
+
+  return this->vertex_cover(k);
+}
+
+

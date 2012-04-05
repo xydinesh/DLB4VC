@@ -35,6 +35,10 @@ namespace dlb {
     int get_nedges();
     bool is_edge(int u, int v);
     void print();
+    bool vertex_cover(int k);
+    bool verify();
+    int select_vertex();
+    void restore(vector<int>& indegree);
   };
 }
 #endif //__DLB4VC_GRAPH_H__
