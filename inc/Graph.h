@@ -3,7 +3,6 @@
 #include "Node.h"
 
 #include <vector>
-#include <map>
 #include <list>
 
 using namespace std;
@@ -12,15 +11,11 @@ namespace dlb {
   protected:
     vector<Node> nodes;
     vector<int> degree;
+    list<int> vc;
 
     int nnodes;
     int nedges;
     int capacity;
-    int next_label;
-
-    list<int> vc;
-    list<int> minvc;
-    int minsize;
 
   public:
     Graph();

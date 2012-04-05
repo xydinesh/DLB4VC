@@ -6,11 +6,11 @@ using namespace std;
 namespace dlb {
 
 	class Node {
-	private:
+      private:
 		list<int> nbrs;
         list<int> dnbrs;
 		int size;
-	public:
+      public:
 		Node();
 		~Node();
 		list<int> const * const get_nbrs();

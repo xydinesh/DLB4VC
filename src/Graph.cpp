@@ -13,8 +13,6 @@ Graph::Graph(void)
   this->nnodes = 0;
   this->nedges = 0;
   this->capacity = 0;
-  this->next_label = 0;
-  this->minsize = INT_MAX;
 }
 
 
@@ -28,7 +26,6 @@ int Graph::add_node()
   this->nodes.push_back(n);
   this->degree.push_back(0);
   this->capacity++;
-  this->next_label++;
   return this->nnodes++;
 }
 
