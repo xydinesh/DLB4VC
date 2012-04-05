@@ -59,6 +59,8 @@ int Node::get_size() const
 
 void Node::remove()
 {
+    while (!this->nbrs.empty())
+        this->delete_nbr(this->nbrs.front());
 	this->size = 0;
 }
 

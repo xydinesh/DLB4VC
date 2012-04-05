@@ -60,7 +60,6 @@ Graph* DimacsBuilder::build_graph()
 	{
 		getline(infile, line);
 		split(line, elem);
-		cout << elem.size() << endl;
 		nnodes = elem[0];
 		nedges = elem[1];
 	}

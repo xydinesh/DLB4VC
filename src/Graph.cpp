@@ -34,6 +34,26 @@ int Graph::add_node()
 
 void Graph::delete_node(int u)
 {
+  if (this->capacity < u)
+    {
+      cerr << "there is no node in " << u << endl;
+      return;
+    }
+
+  const list<int> *nbrs = this->nodes[u].get_nbrs();
+  list<int>::const_iterator it = nbrs->begin();
+
+  // Remove u from nbrs
+  for (; it != nbrs->end(); ++it)
+    {
+      this->nodes[*it].delete_nbr(u);
+      this->nedges --;
+    }
+
+  // Now, remov u.
+  this->nodes[u].remove();
+
+  this->degree[u] = 0;
 
   return;
 }
@@ -41,6 +61,31 @@ void Graph::delete_node(int u)
 void Graph::delete_edge(int u, int v)
 {
 
+  if (this->capacity < u)
+    {
+      cerr << "there is no node in " << u << endl;
+      return;
+    }
+
+  if (this->capacity < v)
+    {
+      cerr << "there is no node in " << v << endl;
+      return;
+    }
+
+  if (u != v)
+    {
+      this->nodes[u].delete_nbr(v);
+      this->nodes[v].delete_nbr(u);
+  
+      this->degree[u]--;
+      this->degree[v]--;
+
+      this->nedges --;
+    }
+
+
+  return;
 }
 
 void Graph::add_edge(int u, int v)

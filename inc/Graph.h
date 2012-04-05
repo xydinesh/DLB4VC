@@ -12,6 +12,7 @@ namespace dlb {
   protected:
     vector<Node> nodes;
     vector<int> degree;
+
     int nnodes;
     int nedges;
     int capacity;
