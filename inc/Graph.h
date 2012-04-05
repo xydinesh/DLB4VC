@@ -39,6 +39,9 @@ namespace dlb {
     bool verify();
     int select_vertex();
     void restore(vector<int>& indegree);
+    void high_degree (int &k);
+    void one_degree(int &k);
+    void process_nodes(int& k);
   };
 }
 #endif //__DLB4VC_GRAPH_H__

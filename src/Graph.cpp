@@ -207,17 +207,27 @@ int Graph::select_vertex()
 
 bool Graph::verify()
 {
+
   for (int i = 0; i < this->capacity; i++)
     {
       if (this->degree[i] >  0)
         {
-          cerr << "Vertex : " << i << " Degree : " << this->degree[i] << endl;
+          //DEBUG("Vertex: %d Degree: %d\n", i, this->degree[i]);
+          //DEBUG("Not a valid vertex cover\n");
           return false;
         }
     }
 
+  list<int>::iterator it = vc.begin();
+  for (; it != vc.end(); ++it)
+    GEN("%d ", *it);
+  GEN("\n");
+
+  DEBUG("Valid vertex cover\n");
+
   return true;
 }
+
 
 void Graph::restore(vector<int>& indegree)
 {
@@ -233,18 +243,61 @@ void Graph::restore(vector<int>& indegree)
 
 }
 
+
+void Graph::high_degree (int& k)
+{
+  for (int i = 0; (i < this->capacity) && (k > 0); i++)
+    {
+      if (this->degree[i] > k)
+        {
+          vc.push_back(i);
+          this->delete_node(i);
+          k--;
+        }
+    }
+}
+
+void Graph::one_degree(int& k)
+{
+  for (int i = 0; (i < this->capacity) && (k > 0); i++)
+    {
+      if (this->degree[i] == 1)
+        {
+          const list<int> *nbr = this->nodes[i].get_nbrs();
+          vc.push_back(nbr->front());
+          this->delete_node(nbr->front());
+          k--;
+        }
+    }
+
+}
+
+void Graph::process_nodes(int& k)
+{
+  this->one_degree(k);
+  this->high_degree(k);
+  this->one_degree(k);
+}
+
+
 bool Graph::vertex_cover(int k1)
 {
   int k = k1;
 
-  if (k < 0)
+  if (!(k > 0))
     {
       return this->verify();
     }
 
+
   vector<int> indegree = this->degree;
+
+  
+  this->process_nodes(k);
+
   int u = this->select_vertex();
   int vcsize = this->vc.size();
+  //DEBUG("k: %d u: %d\n", k, u);
 
   if (u < 0)
     {
@@ -252,12 +305,11 @@ bool Graph::vertex_cover(int k1)
     }
 
   const list<int> *nbrs = this->nodes[u].get_nbrs();
-  list<int>::const_iterator it = nbrs->begin();
-
-  for (; it != nbrs->end() && (k >= 0); ++it, k--)
+  while ((!nbrs->empty()) && (k > 0))
     {
-      vc.push_back(*it);
-      this->delete_node(*it);
+      vc.push_back(nbrs->front());
+      this->delete_node(nbrs->front());
+      k --;
     }
   
 
@@ -269,14 +321,20 @@ bool Graph::vertex_cover(int k1)
   int vcdiff = this->vc.size() - vcsize;
   this->restore(indegree);
   k = k1;
-  while (vcdiff >= 0)
-    vc.pop_back();
+  while (vcdiff > 0)
+    {
+      vc.pop_back();
+      vcdiff --;
+    }
 
   vc.push_back(u);
   k--;
   this->delete_node(u);
 
+  this->process_nodes(k);
+
   return this->vertex_cover(k);
 }
+
 
 
