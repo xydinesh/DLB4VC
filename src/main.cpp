@@ -9,41 +9,20 @@ using namespace dlb;
 
 int main()
 {
-    char x[100];
-    char xe[100];
-    sprintf(x, "graph.log");
-    sprintf(xe, "graph.log");
-    // 1: debug , 5: critical
-    LOG_INIT(x, xe, 1);
-	BuilderFactory f;
-	Graph *ng;
-	string gt("dimacs");
-	Builder *b = f.create_builder(gt);
-
-    DEBUG("starting plane.dim graph\n");
-    b->set_filename("../data/box.dim");
-    ng = b->build_graph();
-
-    for (int i = 0; i < ng->get_nnodes(); i++)
-    {
-        if (ng->is_foldable(i))
-        {
-            DEBUG("folding: %d\n", i);
-            ng->fold_node(i);
-        }
-    }
-
-    ng->print();
-    ng->debug_data();
-
-    b->set_filename("../data/sh2-5.dim");
-    ng = b->build_graph();
-    ng->vertex_cover();
-
-    ng->print();
-
-    ng->verify();
-    
-    LOG_CLOSE();
-	return 0;
+  char x[100];
+  char xe[100];
+  sprintf(x, "graph.log");
+  sprintf(xe, "graph.log");
+  // 1: debug , 5: critical
+  LOG_INIT(x, xe, 1);
+  BuilderFactory f;
+  Graph *ng;
+  string gt("dimacs");
+  Builder *b = f.create_builder(gt);
+  DEBUG("starting plane.dim graph\n");
+  b->set_filename("../data/plane.dim");
+  ng = b->build_graph();
+  ng->print();
+  LOG_CLOSE();
+  return 0;
 }
