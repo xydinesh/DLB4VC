@@ -297,7 +297,6 @@ bool Graph::vertex_cover(int k1)
 
   int u = this->select_vertex();
   int vcsize = this->vc.size();
-  //DEBUG("k: %d u: %d\n", k, u);
 
   if (u < 0)
     {
@@ -313,10 +312,9 @@ bool Graph::vertex_cover(int k1)
     }
   
 
-  bool ret = this->vertex_cover(k);
-
-  if (ret == true)
+  if (this->vertex_cover(k))
     return true;
+
 
   int vcdiff = this->vc.size() - vcsize;
   this->restore(indegree);
