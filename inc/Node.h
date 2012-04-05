@@ -19,7 +19,7 @@ namespace dlb {
 		void delete_nbr(int i);
 		void remove();
 		void print();
-        bool is_foldable();
+        void undelete_nbrs(int n);
 	};
 
 }

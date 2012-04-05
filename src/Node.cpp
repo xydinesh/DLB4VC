@@ -64,3 +64,16 @@ void Node::remove()
 	this->size = 0;
 }
 
+
+// Undelete last n deleted nbrs
+void Node::undelete_nbrs(int n)
+{
+    int i = 0;
+    while ((!this->dnbrs.empty()) && (i < n))
+    {
+        this->nbrs.push_front(this->dnbrs.front());
+        this->dnbrs.pop_front();
+        this->size ++;
+        i++;
+    }
+}
